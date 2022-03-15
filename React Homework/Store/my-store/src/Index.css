@@ -1,0 +1,56 @@
+/*DEFAULTS*/
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul,
+ol,
+li {
+    list-style: none;
+}
+
+img {
+    vertical-align: top;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: inherit;
+    font-size: inherit;
+}
+
+html,
+body {
+    height: 100%;
+    line-height: 1;
+}
+
+
+/* ------------------------------ */
+
+/* END DEFAULTS */
+
+/* ROOT COLORS */
+
+:root{
+    --bodyColor:antiquewhite;
+    --itemColor:lavenderblush;
+    --buttonColor:rgba(23,23,23,0.2);
+    --textColor: black;
+    /* --headerBgColor: buttonColor; */
+    --itemBorder: rgb(1, 1, 56);
+ }
+
