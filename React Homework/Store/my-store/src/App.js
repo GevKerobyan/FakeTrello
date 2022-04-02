@@ -36,28 +36,31 @@ export default function App() {
     if (basket.length === 0) {
       // console.log('1');
       console.log('basket 1 : ', plusData.count)
-      plusData.count++
+      ++plusData.count
       setBasket(() => [plusData]);
-    } else if (basket.length > 0) {
+    }
+    else if (basket.length > 0) {
       let index = basket.findIndex((item) => item.id === plusData.id);
       // console.log('plusData Count :', plusData.count);
+
       if (index < 0) {
         console.log('basket 2 : ', plusData.count)
-        plusData.count++
+        ++plusData.count
         // console.log('plusData : ', plusData)
         setBasket((prev) => [...prev, plusData]);
-      } else {
+      }
+      else {
         setBasket(() => {
-          ++plusData.count;
-console.log('basket last : ',[...basket])
-          return [...basket]
-
+          ++plusData.count
+          // basket.find(item => item.id === plusData.id).count +=1;
+          return [...basket];
+          console.log('plusData.count : ', plusData.count)
+          console.log('basket index : ', basket[index])
+          console.log('basket index count : ', basket[index].count)
         })
-        // console.log('item Count : ', basket[index].count)
       }
     }
   };
-  // console.log(basket)
 
   // BASKET PLUS FUNCTION //
 
@@ -68,59 +71,59 @@ console.log('basket last : ',[...basket])
       } else return item;
     }))
 
-}
+  }
 
-let basketMinus = (basketMinusData) => {
-  if(basketMinusData.count >0) {
+  let basketMinus = (basketMinusData) => {
     if (basketMinusData.count > 0) {
-      setBasket(basket.map((item) => {
-        if (item.id === basketMinusData.id) {
-          return { ...item, count: item.count - 1 };
-        } else return item;
-      }))
-    } else if (basketMinusData.count === 0) {
-      let index = basket.findIndex((item) => item.id === basketMinusData.id);
-       setBasket(basket.map((item) => {
-         if ( item.id !== basketMinusData.id){
-           return item
-         }
+      if (basketMinusData.count > 0) {
+        setBasket(basket.map((item) => {
+          if (item.id === basketMinusData.id) {
+            return { ...item, count: item.count - 1 };
+          } else return item;
         }))
+      } else if (basketMinusData.count === 0) {
+        let index = basket.findIndex((item) => item.id === basketMinusData.id);
+        setBasket(basket.map((item) => {
+          if (item.id !== basketMinusData.id) {
+            return item
+          }
+        }))
+      }
     }
   }
-}
 
 
 
-// BASKET MINUS FUNCTION //
+  // BASKET MINUS FUNCTION //
 
 
-useEffect(() => {
-  fetch(`https://api.harvardartmuseums.org/object?apikey=67d9edc0-e6a3-11e3-9798-57275476509a&sort=rank&sortorder=asc&from=12&size=30&page=1`)
-    .then(res => res.json()).then(data => {
-      setTimeout(() => setData(data.records.map(({ title, images, dated, id, }) => {
-        return { title, url: images[0].baseimageurl, dated, id, count: 0 }
-      })), 2000)
-    })
-}, []) /* UseEffect end */
+  useEffect(() => {
+    fetch(`https://api.harvardartmuseums.org/object?apikey=67d9edc0-e6a3-11e3-9798-57275476509a&sort=rank&sortorder=asc&from=12&size=30&page=1`)
+      .then(res => res.json()).then(data => {
+        setTimeout(() => setData(data.records.map(({ title, images, dated, id, }) => {
+          return { title, url: images[0].baseimageurl, dated, id, count: 0 }
+        })), 2000)
+      })
+  }, []) /* UseEffect end */
 
-return (
-  <div>
-    <Header
-      isModalOpen={isModalOpen}
-      setIsModalOpen={((value) => setIsModalOpen(value))}
-      basket={basket}
-      setBasket={((value) => setBasket(value))}
-      basketPlus = {basketPlus}
-      basketMinus = {basketMinus}
-    />
-    <Products
-      isModalOpen={isModalOpen}
-      data={data}
-      basket={basket}
-      itemCountPlus={itemCountPlus}
-      itemCountMinus={itemCountMinus}
-    />
-  </div>
-)
+  return (
+    <div>
+      <Header
+        isModalOpen={isModalOpen}
+        setIsModalOpen={((value) => setIsModalOpen(value))}
+        basket={basket}
+        setBasket={((value) => setBasket(value))}
+        basketPlus={basketPlus}
+        basketMinus={basketMinus}
+      />
+      <Products
+        isModalOpen={isModalOpen}
+        data={data}
+        basket={basket}
+        itemCountPlus={itemCountPlus}
+        itemCountMinus={itemCountMinus}
+      />
+    </div>
+  )
 }
 
