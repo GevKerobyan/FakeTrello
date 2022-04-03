@@ -87,7 +87,6 @@ const collumnStyles = createUseStyles({
       padding: '5px 5px',
 
    }
-
 })
 
 export { collumnStyles }

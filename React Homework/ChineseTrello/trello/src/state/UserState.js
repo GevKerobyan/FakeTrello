@@ -12,19 +12,23 @@ const userDefaultState = {
    isLoggedIn: false,
    userBoards: [
       // {
-         // boardName: '',
-         // boardID: Math.random() * 10,
-         // boardDiscription: '',
-         // boardCategory: '',
-         // boardStatus: '',
-         // tasksCollumn: [
-         //    {
-         //       collumnName: '',
-         //       tasks: [
+      // boardName: '',
+      // boardID: Math.random() * 10,
+      // boardDiscription: '',
+      // boardCategory: '',
+      // boardStatus: '',
+      // tasksCollumn: [
+      //    {
+      //       collumnName: '',
+      //       tasks: [
 
-         //       ]
-         //    }
-         // ]
+      // taskText: newModalTask.inputTitle,
+      // taskPriority: newModalTask.inputPriority,
+      // taskStatus: newModalTask.inputStatus,
+      //       ]
+      //       ]
+      //    }
+      // ]
       // }
    ]
 }
@@ -34,6 +38,7 @@ const ACTIONS = {
    ADDBOARD: 'ADDBOARD',
    ADDCOLLUMN: 'ADDCOLLUMN',
    ADDTASK: 'ADDTASK',
+   EDITTASK: 'EDITTASK',
 }
 
 function reducer(state, action) {
@@ -69,12 +74,10 @@ function reducer(state, action) {
       }
 
       case ACTIONS.ADDTASK: {
-         console.log(action, ' : action')
          const updatedUserBoards = state.userBoards.map((item, index) => {
             if (index !== action.index) {
                return item
             } else {
-               // return { ...item, ...item.tasksCollumn, ...item[index].tasksCollumn.tasks: [] }
                const newTask = item.tasksCollumn.map((collumn, collumnIndex) => {
                   if (collumnIndex !== action.collumnIndex) {
                      return collumn
@@ -83,9 +86,35 @@ function reducer(state, action) {
                   }
                })
                return { ...item, tasksCollumn: newTask }
-            } 
+            }
          })
-         return {...state, userBoards: updatedUserBoards}
+         return { ...state, userBoards: updatedUserBoards }
+      }
+
+      case ACTIONS.EDITTASK: {
+         const updatedUserBoards = state.userBoards.map((item, boardIndex) => {
+            if (boardIndex !== action.index) {
+               return item
+            } else {
+               const newTask = item.tasksCollumn.map((collumn, collumnIndex) => {
+                  if (collumnIndex !== action.collumnIndex) {
+                     return collumn
+                  } else {
+                     const editedTask = collumn.tasks.map((singleTask, singleTaskIndex) => {
+                        if (singleTaskIndex !== action.taskItemIndex) {
+                           return singleTask
+                        } else {
+                           return action.task
+                        }
+                     })
+                     return { ...collumn, tasks: editedTask}
+                  }
+                 
+               })
+               return { ...item, tasksCollumn: newTask }
+            }
+         })
+         return { ...state, userBoards: updatedUserBoards }
       }
 
       // ----- ADD BOARD ----- // 

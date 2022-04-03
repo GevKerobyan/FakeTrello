@@ -1,93 +1,108 @@
-import { useRef, useState } from "react";
-import { ACTIONS } from "../../state/UserState"
+import { useEffect, useRef, useState } from "react";
+import { ACTIONS } from "../../state/UserState";
 import ModalClose from "../Hooks/modalClose";
-import useUserContext from "../Hooks/useUserContext"
+import useUserContext from "../Hooks/useUserContext";
+import editIMG from '../../Assets/editTask.svg'
 
 import taskModal from "./TaskItemModalStyling"
 
 
-function TaskItemModal({ openTaskModal, taskItem, boardIndex, collumnIndex, collumn }) {
+function TaskItemModal({ openTaskModal, taskItem, taskItemIndex, boardIndex, collumnIndex, collumn }) {
   const ref = useRef()
+  ModalClose(ref, () => openTaskModal())
   const taskItemModal = taskModal();
   const { userState, userDispatch } = useUserContext()
 
-  const [inputTitle, setInputTitle] = useState(taskItem.taskText)
-  const [inputPriority, setInputPriority] = useState(taskItem.taskPriority)
-  const [inputStatus, setInputStatus] = useState()
+  const [newModalTask, setNewModalTask] = useState({
+    inputTitle: userState.userBoards[boardIndex].tasksCollumn[collumnIndex].tasks[taskItemIndex].taskText,
+    inputPriority: userState.userBoards[boardIndex].tasksCollumn[collumnIndex].tasks[taskItemIndex].taskPriority,
+    inputStatus: userState.userBoards[boardIndex].tasksCollumn[collumnIndex].collumnName,
+  })
 
   const [textInputFlag, setTextInputFlag] = useState(false)
   const [priorityInputFlag, setPriorityInputFlag] = useState(false)
   const [statusInputFlag, setStatusInputFlag] = useState(false)
 
-  ModalClose(ref, () => openTaskModal())
+  const [dispatchFlag, setDispatchFlag] = useState(false)
 
-  console.log(taskItem);
+ 
 
   const changeInputTitle = (e) => {
-    return setInputTitle(e.target.value);
+    return setNewModalTask({...newModalTask, inputTitle: e.target.value});
   }
 
   const changeInputPriority = (e) => {
-    return setInputPriority(e.target.value);
+    return setNewModalTask({...newModalTask, inputPriority: e.target.value});
   }
 
   const changeInputStatus = (e) => {
-    return setInputStatus(e.target.value);
+    return setNewModalTask({...newModalTask, inputStatus: e.target.value});
   }
 
-  const toggleTextInput = () => {
-    setTextInputFlag(true)
-    setStatusInputFlag(false)
-    setPriorityInputFlag(false)
-  }
-  const togglePriorityInput = () => {
-    setPriorityInputFlag(true)
-    setTextInputFlag(false)
-    setStatusInputFlag(false)
-  }
-  const toggleStatusInput = () => {
-    setStatusInputFlag(true)
-    setPriorityInputFlag(false)
-    setTextInputFlag(false)
-
+  const submitTitleChange = (e) => {
+    setTextInputFlag(!textInputFlag)
+    setNewModalTask({...newModalTask, inputTitle: e.target.value})
+    setDispatchFlag(!dispatchFlag)  
+    
   }
 
-  const submitChanges = (e) => {
-    setInputTitle(e.target.value[0])
-    setInputPriority(e.target.value[1])
-    setInputStatus(e.target.value[2])
+  const submitPriorityChange = (e) => {
+    setPriorityInputFlag(!priorityInputFlag)
+    setNewModalTask({...newModalTask, inputPriority: e.target.value})
+    setDispatchFlag(!dispatchFlag)  
+  }
 
+  const submitStatusChange = (e) => {
+    setStatusInputFlag(!statusInputFlag)
+    setNewModalTask({...newModalTask, inputStatus: e.target.value})
+    setDispatchFlag(!dispatchFlag)  
+  }
+
+  
+  const dispatchChanges = () => {
     userDispatch(
-      {type: ACTIONS.ADDTASK, 
-        index: boardIndex, 
+      {
+        type: ACTIONS.EDITTASK,  
+        taskItemIndex: taskItemIndex, 
+        collumnIndex: collumnIndex,
+        boardIndex: boardIndex,
         collumnIndex: collumnIndex,
         task: {
-          taskText: inputTitle,
-          taskPriority: inputPriority,
-          taskStatus: inputStatus,
-        }})
+          taskText: newModalTask.inputTitle,
+          taskPriority: newModalTask.inputPriority,
+          taskStatus: newModalTask.inputStatus,
+        }
+      })
   }
+
+    
 
   return (
     <div className={taskItemModal.modalWrap} ref={ref}>
-      <div className={taskItemModal.modalInputWrap} onClick={toggleTextInput}><span>Task</span>
-        {textInputFlag ? <input value={inputTitle} className={taskItemModal.modalInput} type='text'
+      <div className={taskItemModal.modalInputWrap}><span>Task</span>
+        {textInputFlag ? <input value={newModalTask.inputTitle} className={taskItemModal.modalInput} type='text'
           onChange={(e) => changeInputTitle(e)} /> :
-          (<span>{inputTitle}</span>)}
+          (<span>{newModalTask.inputTitle}</span>)}
+        <button onClick={(e) => submitTitleChange(e)} className={taskItemModal.editButton}> <img className={taskItemModal.editIMG} src={editIMG} /></button>
       </div>
 
-      <div className={taskItemModal.modalInputWrap} onClick={togglePriorityInput}><span>Priority</span>
-        {priorityInputFlag ? <input value={inputPriority} className={taskItemModal.modalInput} type='text'
+      <div className={taskItemModal.modalInputWrap}><span>Priority</span>
+        {priorityInputFlag ? <input value={newModalTask.inputPriority} className={taskItemModal.modalInput} type='text'
           onChange={(e) => changeInputPriority(e)} /> :
-          (<span>{inputPriority}</span>)}
+          (<span>{newModalTask.inputPriority}</span>)}
+        <button onClick={(e) => submitPriorityChange(e)} className={taskItemModal.editButton}> <img className={taskItemModal.editIMG} src={editIMG} /></button>
+
       </div>
 
-      <div className={taskItemModal.modalInputWrap} onClick={toggleStatusInput}><span>Status</span>
-        {statusInputFlag ? <input value={inputStatus} className={taskItemModal.modalInput} type='text'
+      <div className={taskItemModal.modalInputWrap}><span>Status</span>
+        {statusInputFlag ? <input value={newModalTask.inputStatus} className={taskItemModal.modalInput} type='text'
           onChange={(e) => changeInputStatus(e)} /> :
-          (<span>{collumn}</span>)}
+          (<span>{newModalTask.inputStatus}</span>)}
+        <button onClick={(e) => submitStatusChange(e)} className={taskItemModal.editButton}> <img className={taskItemModal.editIMG} src={editIMG} /></button>
+
       </div>
-      <button onClick={(e) => submitChanges(e)}>Submit Changes</button>
+      <button onClick={dispatchChanges}>dispatch</button>
+
     </div>
 
   )

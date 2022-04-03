@@ -38,23 +38,24 @@ export default function ListCollumn({ collumn, index, collumnIndex }) {
       <div className={collumnStyle.taskList}>
         <h3>Tasks</h3>
         <div className={collumnStyle.tasksWrap}>
-        {userState.userBoards[index].tasksCollumn[collumnIndex].tasks.map((taskItem, taskItemIndex) => {
-              //  { console.log(collumn, collumnIndex, 'baba') }
-               return (<div key={taskItemIndex}>
-               <div onClick={(e)=>openTaskModal(e)} className={collumnStyle.singleTask} >{taskItem.taskText}</div>
-               {modalFlag && <TaskItemModal openTaskModal={openTaskModal} 
-               taskItem={taskItem} 
-               boardIndex = {index}
-               collumnIndex = {collumnIndex}
-               taskItemIndex={taskItemIndex}
-               collumn = {collumn.collumnName}
-               />}
-               </div>)
-            })}
+          {userState.userBoards[index].tasksCollumn[collumnIndex].tasks.map((taskItem, taskItemIndex) => {
+            //  { console.log(collumn, collumnIndex, 'baba') }
+            return (<div key={taskItemIndex}>
+              <div onClick={(e) => openTaskModal(e)} className={collumnStyle.singleTask} >{taskItem.taskText}</div>
+              {modalFlag && <TaskItemModal
+                openTaskModal={openTaskModal}
+                taskItem={taskItem}
+                boardIndex={index}
+                collumnIndex={collumnIndex}
+                taskItemIndex={taskItemIndex}
+                collumn={collumn.collumnName}
+              />}
+            </div>)
+          })}
         </div>
-       
-        
- 
+
+
+
       </div>
     </div>
   )

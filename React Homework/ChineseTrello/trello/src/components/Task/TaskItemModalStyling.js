@@ -23,13 +23,25 @@ const taskModal = createUseStyles({
       height: '30px',
       width: 'calc(100% - 20px)',
       backgroundColor: 'none',
+      padding: '5px 10px',
    },
 
    modalInput: {
       width: '40%',
-      height:'30px',
+      height:'25px',
       border: 'none',
       boxSizing: 'border-box',
+   },
+
+   editButton:{
+      height: '30px',
+      width: '30px',
+      boxShadow: '1px 1px 5px rgb(32, 33, 66)',
+      },
+
+   editIMG: {
+      height: '15px',
+      width: '15px',
    }
 })
 
